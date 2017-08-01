@@ -19,5 +19,7 @@ export default {
 <style>
   .left-side{
       padding-top: 20px;
+      position:fixed;
+      height:100%;
   }
 </style>
