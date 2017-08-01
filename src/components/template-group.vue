@@ -3,7 +3,7 @@
         <el-popover @show="show" @hide="hide" ref="popoverTemplate" placement="right" width="225" offset="27" title="选择所需模板，并拖动到相应位置" trigger="click">
             <el-collapse v-model="collapse">
                 <el-collapse-item :title="gp.name" v-for="(gp, gidx) in templateGroupSeq" :key="gp.group" :name="gp.group">
-                    <el-row :gutter="10" type="flex"  v-drag-zone:initing="gp.templateSeq">
+                    <el-row :gutter="10" type="flex" v-drag-zone:initing="gp.templateSeq">
                         <el-col :span="8" v-for="(template,tidx) in gp.templateSeq" :key="template.code">
                             <a class="template-item">
                                 <img :src="template.previewImg">
@@ -40,16 +40,28 @@ export default {
     },
     mounted: function () {
         debugger;
-        this.$http.get('/mock/templateList.json').then((res) => {
+        var templateListPromise = this.$http.get('/mock/templateList.json').then(res => {
             if (res.body.code == 0) {
-                var groupObj = _.groupBy(res.body.data, function (d) {
-                    return d.groupType//{1:[],2:[],3:[],4:[]}
-                });
-                _.each(this.templateGroupSeq, function (val, key) {
-                    val.templateSeq.push(...groupObj[key + 1]);
-                });
+                return res.data.data;
             }
         });
+        var templateListVarPromise = this.$http.get('/mock/getTemplateListByVer.json').then(res => {
+            if (res.body.code == 0) {
+                _.each(res.body.data, function (v, k) {
+                    v.variables = (typeof v.variables == 'string') ? JSON.parse(decodeURIComponent(v.variables)) : {};
+                })
+                return res.data.data;
+            }
+        });;
+        Promise.all([templateListPromise, templateListVarPromise]).then(templates => {
+            var templateListArr = _.assign([], templates[0], templates[1], true);
+            var groupObj = _.groupBy(templateListArr, function (d) {
+                return d.groupType//{1:[],2:[],3:[],4:[]}
+            });
+            _.each(this.templateGroupSeq, function (val, key) {
+                val.templateSeq.push(...groupObj[key + 1]);
+            });
+        })
     },
     methods: {
         show: function () {
@@ -70,22 +82,33 @@ export default {
 .el-collapse-item__content {
     padding: 0!important;
 }
-.el-row--flex{
-    flex-flow:row wrap;
+
+.el-row--flex {
+    flex-flow: row wrap;
     margin-left: 0!important;
     margin-right: 0!important;
     margin-top: 10px;
 }
+
 .el-collapse-item__wrap {
     background-color: #ffffff!important;
     border-bottom: 1px solid #dfe6ec;
 }
-.el-popover{
-    border:0!important;
+
+.el-popover {
+    border: 0!important;
+    overflow-y: scroll;
+    height: 100%;
 }
-.el-collapse-item__header{
+
+.el-collapse-item__header {
     background-color: #ebedf3;
 }
+
+.el-collapse {
+    padding-bottom: 50px;
+}
+
 .left-side-module-wrapper {
     text-align: center;
     height: 40px;
