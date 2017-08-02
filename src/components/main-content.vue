@@ -16,17 +16,18 @@ import h5Multipic from './v1/h5-multipic.vue'
 import goodsR1c2 from './v1/goods-r1c2.vue'
 export default {
     props: ['moduleContext'],
-    components: {h5Multipic, goodsR1c2},
+    components: { h5Multipic, goodsR1c2 },
     data: () => {
         return {
             placeholder: '拖放至此处',
-            moduleSeq: []
+            moduleSeq: [],
+            urlParams: { pageId: 121212 }
         }
     },
-    mounted:function(){
+    mounted: function () {
         var self = this;
-        window.bus.$on('vars-change',function(newVars){
-            var tempModule = _.find(self.moduleSeq,function(ms){
+        window.bus.$on('vars-change', function (newVars) {
+            var tempModule = _.find(self.moduleSeq, function (ms) {
                 return ms.moduleId === self.moduleContext.moduleId;
             });
             _.assign(tempModule.vars, newVars);
@@ -34,52 +35,40 @@ export default {
     },
     methods: {
         addModule(m, idx) {
+            debugger;
             this.$set(m, 'showEdit', false);
             this.$set(m, 'showEditDialog', false);
-            //api.saveModule().then((data)=>{   })
-            //convert template to module
-            debugger;
-            var module = {
-                moduleId: 1111+idx,
-                name: '单行多图',
-                customName: '测试单行多图' + idx,
-                componentCode: 'h5-multipic',
-                componentVer: 'v1',
-                isLazy: false,
-                renderType: 0,
-                customizedJs: 'js',
-                startDate: new Date(),
-                endDate: new Date(),
-                sort: idx,
-                mode: 1,
-                vars: {
-                    "images": [
-                        {
-                            "link": {},
-                            "url": "",
-                            "src": "http://cdn.oudianyun.com/lyf-local/trunk/back-cms/1499934477602_4176_80.jpg@base@tag=imgScale&q=80",
-                            "desc": "图" + idx,
-                            "oriWidth": "",
-                            "oriHeight": ""
+            this.saveModule(m, idx).then(result => {
+                if (result.body.code == 0) {
+                    m.moduleId = result.body.data;
+                    m.sort = idx;
+                    m.data = _.assign.extend({}, data);
+                    m.cates = _.assign({}, goods);
+                    this.moduleSeq.splice(idx, 0, m);
+                    //更改所有受影响的sort字段
+                    _.each(this.moduleSeq, function (v, k) {
+                        if (k >= idx) {
+                            v.sort++;
                         }
-                    ],
-                    "margin": 1
-                },
-                data:{
-                    goods:[],
-                    category:[]
-                }
-            }
-            this.moduleSeq.splice(idx, 0, _.clone(_.assign(m, module)));
-            //更改所有受影响的sort字段
-            _.each(this.moduleSeq, function (v, k) {
-                if (k >= idx) {
-                    v.sort++;
+                    });
                 }
             });
+
+
         },
         setEditShow(m, bl) {
             m.showEdit = bl;
+        },
+        saveModule: function (m, idx) {
+            return this.$http.post('/mock/pageInfo.json',{
+                pageId: this.urlParams.pageId,
+                customName: m.customName,
+                templateCode: m.templateCode,
+                templateVer: m.templateVer,
+                sort: idx,
+                isChange: 0,
+                variables: encodeURIComponent(JSON.stringify(m.variables || {}))
+            })
         },
         editModule(m) {
             // 生成moduleContext 并传递到弹窗中
