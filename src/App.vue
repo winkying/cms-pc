@@ -44,9 +44,7 @@ export default {
 	},
 	components: { leftSide, mainContent, moduleEdit },
 	mounted:function(){
-		this.$http.get('/mock/pageInfo.json').then(function(res){
-			console.log(res.body);
-		});
+		
 	},
 	methods: {
 

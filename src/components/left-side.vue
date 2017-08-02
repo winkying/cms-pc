@@ -20,9 +20,6 @@ export default {
   .left-side{
       padding-top: 20px;
       position:fixed;
-<<<<<<< HEAD
       height:100%;
-=======
->>>>>>> 70c1ac254b4784630777ff62d7430604ab229f42
   }
 </style>

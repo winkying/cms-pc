@@ -40,12 +40,15 @@ export default {
     },
     mounted: function () {
         debugger;
-        var templateListPromise = this.$http.get('/mock/templateList.json').then(res => {
+        this.$http.get('/api/category/list?parentId=0&level=1&companyId=30').then(res => {
+            console.log(res);
+        })
+        var templateListPromise = this.$http.get('/cms/cmsModuleTemplateRead/getTemplateList.do?platform=2&themeId=1&pageType=3').then(res => {
             if (res.body.code == 0) {
                 return res.data.data;
             }
         });
-        var templateListVarPromise = this.$http.get('/mock/getTemplateListByVer.json').then(res => {
+        var templateListVarPromise = this.$http.get('/api/templateListByVer').then(res => {
             if (res.body.code == 0) {
                 _.each(res.body.data, function (v, k) {
                     v.variables = (typeof v.variables == 'string') ? JSON.parse(decodeURIComponent(v.variables)) : {};

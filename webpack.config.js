@@ -1,12 +1,18 @@
+const path = require('path');
 const resolve = require('path').resolve
 const webpack = require('webpack')
+const MockWebpackPlugin = require('mock-webpack-plugin');
+const proxy = require('./mock/config.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const url = require('url')
 const publicPath = ''
 
+const commonJsFiles = ['./src/common/a.js', './src/common/b.js', ];
+
 module.exports = (options = {}) => ({
   entry: {
+    common: commonJsFiles,
     vendor: ['./src/libs/vendor.js'],
     index: ['./src/main.js']
   },
@@ -27,8 +33,8 @@ module.exports = (options = {}) => ({
         exclude: /node_modules/
       },
       {
-        test:/\.less$/,
-        use:['style-loader','css-loader','less-loader','postcss-loader']
+        test: /\.less$/,
+        use: ['style-loader', 'css-loader', 'less-loader', 'postcss-loader']
       },
       {
         test: /\.css$/,
@@ -40,22 +46,22 @@ module.exports = (options = {}) => ({
           loader: 'url-loader',
           options: {
             limit: 10000,
-            name:'images/[name].[ext]'
+            name: 'images/[name].[ext]'
           }
         }]
       }
     ]
   },
-  stats:{
-    hideModules:options.dev ? false : true
+  stats: {
+    hideModules: options.dev ? false : true
   },
   plugins: [
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['vendor', 'manifest']
+      names: ['vendor', 'common', 'manifest']
     }),
     new HtmlWebpackPlugin({
       template: 'src/index.html',
-      progress:options.dev ? false : true
+      progress: options.dev ? false : true
     }),
     //copy libs to dist/libs
     /* new webpack.optimize.UglifyJsPlugin({
@@ -64,16 +70,17 @@ module.exports = (options = {}) => ({
         drop_console: false,
       }
     }), */
-    new CopyWebpackPlugin([
+    /* new CopyWebpackPlugin([
       {
         from:'src/common',
         to:resolve(__dirname, 'dist/common')
-      },
-      {
-        from:'src/mock',
-        to:resolve(__dirname, 'dist/mock')
       }
-    ])
+    ]), */
+
+    /* new MockWebpackPlugin({
+      config:proxy,
+      port:3000
+    }) */
   ],
   resolve: {
     alias: {
@@ -81,19 +88,16 @@ module.exports = (options = {}) => ({
     }
   },
   devServer: {
-    host: '127.0.0.1',
-    port: 8010,
-    inline: options.dev ? true : false,
-    hot: options.dev ? true : false,
-    proxy: {
-      '/api/': {
-        target: 'http://127.0.0.1:8080',
-        changeOrigin: true,
-        pathRewrite: function(path,req){
-          return path.replace('/api',req+'.json')
-        }
+    contentBase: path.resolve(__dirname, 'build'),
+    host: 'lyfadmin.dev.laiyifen.com',
+    port: 80,
+    disableHostCheck: true,
+    /* proxy:{
+      '/cms':{
+        target:'http://lyfadmin.dev.laiyifen.com',
+         secure: false
       }
-    },
+    }, */
     historyApiFallback: {
       index: url.parse(options.dev ? '/assets/' : publicPath).pathname
     }
