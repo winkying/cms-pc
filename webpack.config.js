@@ -1,14 +1,37 @@
 const path = require('path');
 const resolve = require('path').resolve
 const webpack = require('webpack')
-const MockWebpackPlugin = require('mock-webpack-plugin');
-const proxy = require('./mock/config.js');
+// const MockWebpackPlugin = require('mock-webpack-plugin');
+// const proxy = require('./mock/config.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const url = require('url')
 const publicPath = ''
 
-const commonJsFiles = ['./src/common/a.js', './src/common/b.js', ];
+const paths = {
+  src:'src'
+}
+
+const commonJsFiles = [
+  './src/common/sessionStorage.js',
+  './src/common/localStorage.js',
+  './src/common/loading.js',
+  './src/common/cookie.js',
+  './src/common/auth.js',
+  './src/common/browser.js',
+  './src/common/network.js',
+  './src/common/utils.js',
+  './src/common/api-request.js',
+  './src/common/mall-setting.js',
+  './src/common/distribution.js',
+  './src/common/weixinshare.js',
+  './src/common/price-stock.js',
+  './src/common/promotion-icon.js',
+  './src/common/sys-time.js',
+  './src/common/filters.js',
+  './src/common/scroll-loading.js',
+  './src/common/app-dnd.js'
+];
 
 module.exports = (options = {}) => ({
   entry: {
@@ -70,12 +93,12 @@ module.exports = (options = {}) => ({
         drop_console: false,
       }
     }), */
-    /* new CopyWebpackPlugin([
+     new CopyWebpackPlugin([
       {
-        from:'src/common',
-        to:resolve(__dirname, 'dist/common')
+        from:'./src/mock',
+        to:resolve(__dirname, 'dist/mock')
       }
-    ]), */
+    ]), 
 
     /* new MockWebpackPlugin({
       config:proxy,
@@ -89,18 +112,18 @@ module.exports = (options = {}) => ({
   },
   devServer: {
     contentBase: path.resolve(__dirname, 'build'),
-    host: 'lyfadmin.dev.laiyifen.com',
+    //host: 'lyfadmin.dev.laiyifen.com',
     port: 80,
-    disableHostCheck: true,
+    disableHostCheck: true, 
     /* proxy:{
       '/cms':{
         target:'http://lyfadmin.dev.laiyifen.com',
          secure: false
       }
     }, */
-    historyApiFallback: {
+    /* historyApiFallback: {
       index: url.parse(options.dev ? '/assets/' : publicPath).pathname
-    }
+    } */
   },
   devtool: options.dev ? '#eval-source-map' : '#source-map'
 })

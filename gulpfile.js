@@ -14,20 +14,26 @@ function runWebpackServer(config) {
     new WebpackDevServer(compiler, {
         //server配置
         contentBase: path.resolve(__dirname, 'build'),
-        host: 'lyfadmin.dev.laiyifen.com',
-        port: 80,
+        //host: 'lyfadmin.dev.laiyifen.com',
         disableHostCheck: true,
         hot: true,
-        historyApiFallback: false,
-        compress: true,
-         proxy: {
-            '/api/**': {
-                target: 'http://m.lyf.dev.laiyifen.com',
-                ignorePath: true,
-                changeOrigin: true,
+        proxy: [{
+                '/cms': {
+                    target: 'http://lyfadmin.dev.laiyifen.com/',
+                    changeOrigin: true
+                }
+            },
+            {
+                '/mock': {
+                    target: 'http://localhost/'
+                },
+            },
+            {
+                context: ['/api', '/obi-web', '/ouser-web', '/ouser-center', '/agent-fx-web', '/opay-web', '/osc-api', '/back-finance-web', '/admin-web'],
+                target: 'https://m.lyf.dev.laiyifen.com',
                 secure: false
             }
-        } 
+        ]
     }).listen(80, "localhost", function (err) {
         //if(err) throw new gutil.PluginError("webpack-dev-server", err);
         console.log("[webpack-dev-server]", "http://localhost:80");

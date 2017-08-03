@@ -12,16 +12,20 @@
 
 
 <script>
+import Vue from 'vue'
 import h5Multipic from './v1/h5-multipic.vue'
 import goodsR1c2 from './v1/goods-r1c2.vue'
+
+debugger;
+var urlParams = Vue.utils.paramsFormat(window.location.href);
+
 export default {
     props: ['moduleContext'],
     components: { h5Multipic, goodsR1c2 },
     data: () => {
         return {
             placeholder: '拖放至此处',
-            moduleSeq: [],
-            urlParams: { pageId: 121212 }
+            moduleSeq: []
         }
     },
     mounted: function () {
@@ -60,7 +64,7 @@ export default {
             m.showEdit = bl;
         },
         saveModule: function (m, idx) {
-            return this.$http.post('/mock/pageInfo.json',{
+            return this.$http.post('/cms/cmsModuleTemplateWrite/saveModule.do',{
                 pageId: this.urlParams.pageId,
                 customName: m.customName,
                 templateCode: m.templateCode,
