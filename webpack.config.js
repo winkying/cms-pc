@@ -5,8 +5,31 @@ const webpack = require('webpack')
 // const proxy = require('./mock/config.js');
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const StringReplacePlugin = require('string-replace-webpack-plugin')
+
+
+var args = require("args");
 const url = require('url')
-const publicPath = ''
+
+//命令行参数
+args
+  .option("minify", "minify html css js files (default is false, do not minify code.)", false)
+  .option("env", "env properties file path (default is env/dev.properties)", "")
+  .option("output", "the output directory of building (default is dist)", "dist");
+
+const publicPath = '';
+
+const options = args.parse(process.argv);
+
+const envFile = '';
+
+if(options.env){
+  envFile = require(options.env);
+}
+
+
+
+
 
 const paths = {
   src:'src'
@@ -72,13 +95,27 @@ module.exports = (options = {}) => ({
             name: 'images/[name].[ext]'
           }
         }]
-      }
+      },
+      /* {
+        test:/\.(js|vue|css|less)$/,
+        loader:StringReplacePlugin.replace({
+          replacements:[
+            {
+              pattern:/\$\{(\w*?)\}/ig,
+              replacement:function(match, pro, offset, string){
+                return (envFile && envFile[pro]) || ''
+              }
+            }
+          ]
+        })
+      } */
     ]
   },
   stats: {
     hideModules: options.dev ? false : true
   },
   plugins: [
+    new StringReplacePlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       names: ['vendor', 'common', 'manifest']
     }),

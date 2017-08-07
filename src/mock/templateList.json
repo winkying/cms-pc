@@ -328,7 +328,7 @@
     }, {
         "templateId": null,
         "name": "单列多图",
-        "templateCode": "h5-multipic",
+        "templateCode": "h5_multipic",
         "templateVer": "v1",
         "css": null,
         "html": null,

@@ -1,0 +1,24 @@
+{
+
+"apiHost":"",
+
+"ouserHost":"",
+
+"opayHost":"",
+
+"contextPath":"http://m.lyf.test.laiyifen.com",
+
+"staticPath":"http://m.lyf.test.laiyifen.com",
+
+"appKey":"9ca572cc88e6",
+
+"mapKey":"4cbe65ccdb8919a83e3fa235b93b0fa9",
+
+"redirectPath":"http://laiyifen.umaman.com/odylyftest",
+
+"TKAppId":"5AEAEFBE1E45457890D7D2E78F384FC8",
+
+"host" :"http://m.lyf.dev.laiyifen.com",
+
+"redPacket" :"http://beta.touch.laiyifen.com"
+}

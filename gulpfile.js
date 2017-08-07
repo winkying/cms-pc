@@ -14,26 +14,51 @@ function runWebpackServer(config) {
     new WebpackDevServer(compiler, {
         //server配置
         contentBase: path.resolve(__dirname, 'build'),
-        //host: 'lyfadmin.dev.laiyifen.com',
+        host: 'dsadmin.test.odianyun.com',
         disableHostCheck: true,
         hot: true,
-        proxy: [{
-                '/cms': {
-                    target: 'http://lyfadmin.dev.laiyifen.com/',
-                    changeOrigin: true
+        proxy: {
+            '/api': {
+                target: 'http://192.168.6.24',
+                changeOrigin: true,
+                secure: false,
+                headers: {
+                    host: 'dsadmin.test.odianyun.com'
                 }
             },
-            {
-                '/mock': {
-                    target: 'http://localhost/'
-                },
+            '/cms': {
+                target: 'http://192.168.6.24',
+                changeOrigin: true,
+                secure: false,
+                headers: {
+                    host: 'dsadmin.test.odianyun.com'
+                }
             },
-            {
-                context: ['/api', '/obi-web', '/ouser-web', '/ouser-center', '/agent-fx-web', '/opay-web', '/osc-api', '/back-finance-web', '/admin-web'],
-                target: 'https://m.lyf.dev.laiyifen.com',
-                secure: false
+            '/osc-api': {
+                target: 'http://192.168.6.24',
+                changeOrigin: true,
+                secure: false,
+                headers: {
+                    host: 'dsadmin.test.odianyun.com'
+                }
+            },
+            '/plugins/platform-include':{
+                target: 'http://192.168.6.24',
+                changeOrigin: true,
+                secure: false,
+                headers: {
+                    host: 'dsadmin.test.odianyun.com'
+                }
+            },
+            '/ouser-web': {
+                target: 'http://192.168.6.24',
+                changeOrigin: true,
+                secure: false,
+                headers: {
+                    host: 'dsadmin.test.odianyun.com'
+                }
             }
-        ]
+        }
     }).listen(80, "localhost", function (err) {
         //if(err) throw new gutil.PluginError("webpack-dev-server", err);
         console.log("[webpack-dev-server]", "http://localhost:80");

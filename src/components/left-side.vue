@@ -1,9 +1,7 @@
 <template>
-    <div class="left-side">
         <template-group></template-group>
         <!-- <themes></themes> -->
         <!-- <page-config></page-config> -->
-    </div>
 </template>
 
 <script>

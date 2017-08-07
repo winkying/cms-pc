@@ -15,7 +15,7 @@ export default {
     props:['module'],
     computed:{
         vars:function(){
-            return this.module.vars;
+            return this.module.variables;
         }
     }
 }

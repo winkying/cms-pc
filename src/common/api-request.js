@@ -224,11 +224,12 @@ class ApiRequest {
      * 显示错误错误信息
      */
     _showError(msg) {
-        $.tips({
+        /* $.tips({
             content: msg,
             stayTime: 2000,
             type: "warn"
-        });
+        }); */
+        console.log(msg);
     }
 
     /**

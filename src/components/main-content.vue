@@ -5,7 +5,7 @@
                 <div class="module-mask"></div>
                 <i class="el-icon el-icon-edit" @click="editModule(m)"></i>
             </div>
-            <component :is="m.componentCode" :module="m"></component>
+            <component :is="m.templateCode" :module="m"></component>
         </div>
     </div>
 </template>
@@ -13,23 +13,24 @@
 
 <script>
 import Vue from 'vue'
-import h5Multipic from './v1/h5-multipic.vue'
+import h5_multipic from './v1/h5_multipic.vue'
 import goodsR1c2 from './v1/goods-r1c2.vue'
 
-debugger;
-var urlParams = Vue.utils.paramsFormat(window.location.href);
+var urlParams = Vue.utils.paramsFormat(location.href);
 
 export default {
-    props: ['moduleContext'],
-    components: { h5Multipic, goodsR1c2 },
+    props: ['moduleContext','moduleSeq'],
+    components: { h5_multipic, goodsR1c2 },
     data: () => {
         return {
             placeholder: '拖放至此处',
-            moduleSeq: []
         }
     },
     mounted: function () {
         var self = this;
+
+
+
         window.bus.$on('vars-change', function (newVars) {
             var tempModule = _.find(self.moduleSeq, function (ms) {
                 return ms.moduleId === self.moduleContext.moduleId;
@@ -39,15 +40,15 @@ export default {
     },
     methods: {
         addModule(m, idx) {
-            debugger;
             this.$set(m, 'showEdit', false);
             this.$set(m, 'showEditDialog', false);
             this.saveModule(m, idx).then(result => {
                 if (result.body.code == 0) {
                     m.moduleId = result.body.data;
                     m.sort = idx;
-                    m.data = _.assign.extend({}, data);
-                    m.cates = _.assign({}, goods);
+                    //商品及分类数据
+                    /* m.data = _.assign.extend({}, data);
+                    m.cates = _.assign({}, goods); */
                     this.moduleSeq.splice(idx, 0, m);
                     //更改所有受影响的sort字段
                     _.each(this.moduleSeq, function (v, k) {
@@ -65,7 +66,7 @@ export default {
         },
         saveModule: function (m, idx) {
             return this.$http.post('/cms/cmsModuleTemplateWrite/saveModule.do',{
-                pageId: this.urlParams.pageId,
+                pageId: urlParams.pageId,
                 customName: m.customName,
                 templateCode: m.templateCode,
                 templateVer: m.templateVer,
@@ -114,9 +115,7 @@ export default {
 }
 
 .main-content {
-    width: 400px;
-    min-height: 300px;
-    margin-left: 300px;
+    min-height: 600px;
     background-color: #eee;
     position: relative;
 }
